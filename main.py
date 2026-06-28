@@ -1,7 +1,7 @@
 import requests
 import os
 # credits:https://medium.com/@ManHay_Hong/how-to-create-a-telegram-bot-and-send-messages-with-python-4cf314d9fa3e
-api_key = "a4659da27cf7063a9392f4c0a6ce13bc"
+api_key = os.environ.get("opean_weather_key")
 MY_LAT = 41.878113
 MY_LONG = -87.629799
 
