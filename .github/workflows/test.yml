@@ -33,17 +33,24 @@ jobs:
             echo "Go to Settings > Secrets > Actions and add it."
             exit 1
           else
-            echo "MY_EMAIL is configured"
+            echo "botchatID is configured"
           fi
 
-          if [ -z "$MY_PASSWORD" ]; then
-            echo "MY_PASSWORD secret is not set!"
+          if [ -z "$key" ]; then
+            echo "key secret is not set!"
             echo "Go to Settings > Secrets > Actions and add it."
             exit 1
           else
-            echo "MY_PASSWORD is configured"
+            echo "key is configured"
           fi
-
+          
+          if [ -z "$opean_weather_key" ]; then
+            echo "opean_weather_key secret is not set!"
+            echo "Go to Settings > Secrets > Actions and add it."
+            exit 1
+          else
+            echo "opean_weather_key is configured"
+          fi
           echo ""
           echo "All secrets are configured!"
 
