@@ -23,8 +23,9 @@ jobs:
 
       - name: Check secrets are configured
         env:
-          MY_EMAIL: ${{ secrets.MY_EMAIL }}
-          MY_PASSWORD: ${{ secrets.MY_PASSWORD }}
+          opean_weather_key: ${{ secrets.opean_weather_key }}
+          key: ${{ secrets.key }}
+          botchatID: ${{ secrets.botchatID }}
         run: |
           if [ -z "$MY_EMAIL" ]; then
             echo "MY_EMAIL secret is not set!"
