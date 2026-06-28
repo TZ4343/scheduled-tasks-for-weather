@@ -1,38 +1,38 @@
-# To run and test the code you need to update 4 places:
-# 1. Change MY_EMAIL/MY_PASSWORD to your own details.
-# 2. Go to your email provider and make it allow less secure apps.
-# 3. Update the SMTP ADDRESS to match your email provider.
-# 4. Update birthdays.csv to contain today's month and day.
-# See the solution video in the 100 Days of Python Course for explainations.
-
-
-from datetime import datetime
-import pandas
-import random
-import smtplib
+import requests
 import os
+# credits:https://medium.com/@ManHay_Hong/how-to-create-a-telegram-bot-and-send-messages-with-python-4cf314d9fa3e
+api_key = os.environ.get("opean_weather_key")
+MY_LAT = 41.878113
+MY_LONG = -87.629799
 
-# import os and use it to get the Github repository secrets
-MY_EMAIL = os.environ.get("MY_EMAIL")
-MY_PASSWORD = os.environ.get("MY_PASSWORD")
+#used in Environment Variable thing on the terminal used:$env:botchatID = "8357778629"
+#used import os then os.environ.get("key") has to be run from terminal doesnt work with the run button in pycharm
+#to run code do python main.py at least on my machine
 
-today = datetime.now()
-today_tuple = (today.month, today.day)
+def telegram_bot_sendtext(bot_message):
+    bot_token = os.environ.get("key")
+    bot_chatID = os.environ.get("botchatID")
+    send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
+    response = requests.get(send_text)
+    return response.json()
 
-data = pandas.read_csv("birthdays.csv")
-birthdays_dict = {(data_row["month"], data_row["day"])                  : data_row for (index, data_row) in data.iterrows()}
-if today_tuple in birthdays_dict:
-    birthday_person = birthdays_dict[today_tuple]
-    file_path = f"letter_templates/letter_{random.randint(1, 3)}.txt"
-    with open(file_path) as letter_file:
-        contents = letter_file.read()
-        contents = contents.replace("[NAME]", birthday_person["name"])
+things = {
+    "lat":MY_LAT,
+    "lon": MY_LONG,
+    "cnt": 4,
+    "appid":api_key,
+}
 
-    with smtplib.SMTP("YOUR EMAIL PROVIDER SMTP SERVER ADDRESS") as connection:
-        connection.starttls()
-        connection.login(MY_EMAIL, MY_PASSWORD)
-        connection.sendmail(
-            from_addr=MY_EMAIL,
-            to_addrs=birthday_person["email"],
-            msg=f"Subject:Happy Birthday!\n\n{contents}"
-        )
+with requests.get("https://api.openweathermap.org/data/2.5/forecast",params=things) as connections:
+    connections.raise_for_status()
+    data = connections.json()
+    # print(data["list"][0]["weather"][0]["id"])
+    # print(data["list"])
+    will_rain = False
+    for item in data["list"]:
+        curr_max = item["weather"][0]["id"]
+        if curr_max < 700:
+            will_rain = True
+
+if will_rain:
+    test = telegram_bot_sendtext("Its gonna Rain get an Umbrella Bro")
